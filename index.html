@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GrammaLab Kids — Конструктор Игр</title>
+    <style>
+        :root { --purple: #6a0dad; --white: #ffffff; --black: #000000; --gray: #f4f4f4; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--gray); margin: 0; color: var(--black); }
+        header { background: var(--purple); color: var(--white); padding: 20px; text-align: center; border-bottom: 4px solid var(--black); }
+        .container { max-width: 1000px; margin: 20px auto; padding: 20px; }
+        
+        /* Сетка шаблонов */
+        .templates-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .card { background: var(--white); border: 2px solid var(--black); border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 0 var(--purple); }
+        .card .icon { font-size: 40px; margin-bottom: 10px; }
+
+        /* Конструктор */
+        .editor, .game-area { display: none; background: var(--white); border: 3px solid var(--black); border-radius: 20px; padding: 30px; box-shadow: 10px 10px 0 var(--purple); }
+        .ai-btn { background: #e0b0ff; color: var(--black); border: 2px dashed var(--purple); padding: 10px; cursor: pointer; width: 100%; margin-bottom: 20px; font-weight: bold; }
+        
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid var(--black); border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        .btn { background: var(--purple); color: var(--white); border: 2px solid var(--black); padding: 15px; border-radius: 10px; cursor: pointer; width: 100%; font-size: 18px; font-weight: bold; }
+        .btn:hover { background: var(--black); }
+        .nav-btns { display: flex; gap: 10px; margin-top: 20px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>💜 GrammaLab Kids Studio</h1>
+    <p>Создавай свои игры мгновенно</p>
+</header>
+
+<div class="container">
+    <div id="step1">
+        <h2 style="text-align: center;">Выберите пустой шаблон:</h2>
+        <div class="templates-grid">
+            <div class="card" onclick="openEditor('Сопоставить', '🔗')"><div class="icon">🔗</div><h4>Сопоставить</h4></div>
+            <div class="card" onclick="openEditor('Случайные карты', '🃏')"><div class="icon">🃏</div><h4>Случайные карты</h4></div>
+            <div class="card" onclick="openEditor('Викторина', '📝')"><div class="icon">📝</div><h4>Викторина</h4></div>
+            <div class="card" onclick="openEditor('Флеш-карты', '📇')"><div class="icon">📇</div><h4>Флеш-карты</h4></div>
+            <div class="card" onclick="openEditor('Закончи предложение', '🖋️')"><div class="icon">🖋️</div><h4>Закончи предложение</h4></div>
+            <div class="card" onclick="openEditor('Анаграмма', '🔠')"><div class="icon">🔠</div><h4>Анаграмма</h4></div>
+            <div class="card" onclick="openEditor('Групповая сортировка', '📁')"><div class="icon">📁</div><h4>Групповая сортировка</h4></div>
+            <div class="card" onclick="openEditor('Приведи в порядок', '🔢')"><div class="icon">🔢</div><h4>Приведи в порядок</h4></div>
+            <div class="card" onclick="openEditor('Открой поле', '🎁')"><div class="icon">🎁</div><h4>Открой поле</h4></div>
+        </div>
+    </div>
+
+    <div id="editor" class="editor">
+        <h2 id="edit-title">Настройка шаблона</h2>
+        <button class="ai-btn" onclick="aiFill()">✨ Заполнить шаблон через ИИ</button>
+        <p>Введите содержание игры (через запятую или по строчкам):</p>
+        <textarea id="content-input" placeholder="Например: Кот - Cat, Собака - Dog..."></textarea>
+        <div class="nav-btns">
+            <button class="btn" onclick="startGame()">ЗАПУСТИТЬ ИГРУ</button>
+            <button class="btn" style="background:#666" onclick="location.reload()">ОТМЕНА</button>
+        </div>
+    </div>
+
+    <div id="game-area" class="game-area">
+        <h2 id="game-name">Игра</h2>
+        <div id="game-content" style="font-size: 24px; text-align: center; min-height: 150px; display: flex; align-items: center; justify-content: center; border: 2px dashed #ccc; margin: 20px 0;">
+            </div>
+        <button class="btn" onclick="location.reload()">В МЕНЮ</button>
+    </div>
+</div>
+
+<script>
+    let currentTemplate = "";
+
+    function openEditor(name, icon) {
+        currentTemplate = name;
+        document.getElementById('step1').classList.add('hidden');
+        document.getElementById('editor').style.display = 'block';
+        document.getElementById('edit-title').innerText = icon + " Шаблон: " + name;
+    }
+
+    function aiFill() {
+        const input = document.getElementById('content-input');
+        input.value = "🤖 ИИ Генерирует данные...\n";
+        setTimeout(() => {
+            if(currentTemplate === 'Анаграмма') input.value = "ПРАЗДНИК, ГРАММАТИКА, ОБУЧЕНИЕ";
+            else if(currentTemplate === 'Сопоставить') input.value = "Существительное - Предмет, Глагол - Действие, Прилагательное - Признак";
+            else input.value = "Вопрос 1 - Ответ, Вопрос 2 - Ответ, Вопрос 3 - Ответ";
+        }, 1000);
+    }
+
+    function startGame() {
+        const content = document.getElementById('content-input').value;
+        if(!content) { alert("Сначала заполните шаблон!"); return; }
+        
+        document.getElementById('editor').style.display = 'none';
+        document.getElementById('game-area').style.display = 'block';
+        document.getElementById('game-name').innerText = currentTemplate;
+
+        const display = document.getElementById('game-content');
+        
+        // Логика для разных шаблонов
+        if(currentTemplate === 'Анаграмма') {
+            display.innerText = "РАЗДНИКП (Собери слово)";
+        } else if(currentTemplate === 'Случайные карты') {
+            display.innerHTML = "<div style='background:var(--purple); color:white; padding:40px; border-radius:10px;'>КАРТА: СУЩЕСТВИТЕЛЬНОЕ</div>";
+        } else if(currentTemplate === 'Викторина') {
+            display.innerHTML = "<div>Вопрос: Как пишется жи-ши?<br><button class='btn'>И</button> <button class='btn'>Ы</button></div>";
+        } else {
+            display.innerText = "Игра «" + currentTemplate + "» запущена с вашими данными!";
+        }
+    }
+</script>
+
+</body>
+</html>
